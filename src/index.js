@@ -6,7 +6,7 @@ const hostname = "orari-be.divsi.unimi.it"
 const path = "/PortaleEasyPlanning/biblio/index.php"
 rp = rp.defaults({jar: true, transform: (body) => cheerio.load(body)})
 
-let paramsFile = fs.readFileSync('params.json');
+let paramsFile = fs.readFileSync('src/params.json');
 
 
 async function book(infos, hour) {
