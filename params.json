@@ -1,0 +1,38 @@
+
+[
+    {  
+        "servizio": "26",
+        "area": "25",
+        "cognome_nome": "Dagri Massilimiano",
+        "email": "massimiliano.dagri@studenti.unimi.it",
+        "codice_fiscale": "DGRMSM95L27F205Z"
+    },
+    {
+        "servizio": "26",
+        "area": "25",
+        "cognome_nome": "Amadori Tommaso",
+        "email": "tommi27@live.it",
+        "codice_fiscale": "MDRTMS97T02F205Y"
+    },
+    {
+        "servizio": "26",
+        "area": "25",
+        "cognome_nome": "Carmini Marco",
+        "email": "marco9755@gmail.com",
+        "codice_fiscale": "crmmrc97e05f205f"
+    },
+    {
+        "servizio": "26",
+        "area": "25",
+        "cognome_nome": "Fogacci Francesca",
+        "email": "Francescafogacci1@gmail.com",
+        "codice_fiscale": "FGCFNC97H48F205M"
+    },
+    {
+        "servizio": "26",
+        "area": "25",
+        "cognome_nome": "Intagliata Giacomo",
+        "email": "giacomoint@gmail.com",
+        "codice_fiscale": "NTGGCM97B23I754X"
+    }
+]
