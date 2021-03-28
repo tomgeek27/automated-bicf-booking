@@ -1,12 +1,12 @@
 const fs = require('fs');
+    
+    let rp = require("request-promise")
+    const cheerio = require('cheerio');
+    const hostname = "orari-be.divsi.unimi.it"
+    const path = "/PortaleEasyPlanning/biblio/index.php"
+    rp = rp.defaults({jar: true, transform: (body) => cheerio.load(body)})
 
-let rp = require("request-promise")
-const cheerio = require('cheerio');
-const hostname = "orari-be.divsi.unimi.it"
-const path = "/PortaleEasyPlanning/biblio/index.php"
-rp = rp.defaults({jar: true, transform: (body) => cheerio.load(body)})
-
-let paramsFile = fs.readFileSync('src/params.json');
+    let paramsFile = fs.readFileSync('src/params.json');
 
 
 async function book(infos, hour) {
@@ -37,16 +37,18 @@ async function book(infos, hour) {
     
     let res = $(".month-container").children().map((_,e) => e).toArray()
     let index = res.reverse().findIndex(x => $(x).is(".interval-outer-div"))
-    var r = $(res[index]).find("p.slot_available").map((_,e) => ({
+    var r = $(res[index]).find("p.slot_available").not(".slot_altri_impegni").map((_,e) => ({
                 text: $(e).text().trim(),
                 onClick: $(e).attr("onclick")
             })).toArray()
-    if(r == null || r.length == 0) {
+    
+    var slot = search(hour, r)
+    if(slot == undefined || r.length == 0) {
         console.log(infos['cognome_nome'] + ", sei già prenotato o sono finiti i posti")
         return
     }
 
-    form = {...form, ...getVals(search(hour, r)['onClick'])}
+    form = {...form, ...getVals(slot['onClick'])}
     form['durata_servizio'] = (form['end_time'] - form['timestamp']).toString()
     options = {
         uri: `https://${hostname}${path}?include=review`,
@@ -67,6 +69,7 @@ async function book(infos, hour) {
 
     var $ = await rp(options)
 
+    document.getElementById("result").innerHTML = "dd"//infos['cognome_nome'] + ", " + $("h1.page-title").text()
     console.log(infos['cognome_nome'] + ", " + $("h1.page-title").text())
 } 
 
@@ -99,8 +102,7 @@ function getWeekday (d) {
         nextDay.setDate(nextDay.getDate() + 1)
     } else if(d.getDay() == 6) {
         nextDay.setDate(nextDay.getDate() + 2)
-    }
-    
+    }    
     return nextDay
 }
 
@@ -113,13 +115,12 @@ function getDateDDMMYYYY(d) {
 }
 
 async function main() {
-
     let i_ragazzi = JSON.parse(paramsFile);
     for(const il_ragazzo of i_ragazzi) {
         await book(il_ragazzo, '10:00')
-        await book(il_ragazzo, '15:00')
+        //await book(il_ragazzo, '15:00')
     }
 
 }
 
-main()
+//main()
