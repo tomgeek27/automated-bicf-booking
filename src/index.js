@@ -8,9 +8,8 @@ const fs = require('fs');
 
     let paramsFile = fs.readFileSync('src/params.json');
 
-
+//hour should be 10:00 or 15:00
 async function book(infos, hour) {
-    //hour should be 10:00 or 15:00
 
     infos['data_inizio'] = getDateDDMMYYYY(getWeekday(new Date()))
     let options = {
@@ -69,7 +68,6 @@ async function book(infos, hour) {
 
     var $ = await rp(options)
 
-    document.getElementById("result").innerHTML = "dd"//infos['cognome_nome'] + ", " + $("h1.page-title").text()
     console.log(infos['cognome_nome'] + ", " + $("h1.page-title").text())
 } 
 
@@ -103,7 +101,7 @@ function getWeekday (d) {
     } else if(d.getDay() == 6) {
         nextDay.setDate(nextDay.getDate() + 2)
     }    
-    return nextDay
+    return nextDay 
 }
 
 function getDateDDMMYYYY(d) {
@@ -118,9 +116,9 @@ async function main() {
     let i_ragazzi = JSON.parse(paramsFile);
     for(const il_ragazzo of i_ragazzi) {
         await book(il_ragazzo, '10:00')
-        //await book(il_ragazzo, '15:00')
+        await book(il_ragazzo, '15:00')
     }
 
 }
 
-//main()
+main()
