@@ -15,13 +15,13 @@ rp = rp.defaults({jar: true, transform: (body) => cheerio.load(body)})
 let paramsFile = fs.readFileSync('params.json');
 
 //hour should be 10:00 or 15:00
-async function book(infos, hour) {
+//service must be 26 (for normal booking) or 50 (for last-minute booking)
+async function book(infos, hour, service) {
 
     infos['data_inizio'] = getDateDDMMYYYY(getWeekday(new Date()))
     let options = {
         uri: `https://${hostname}${path}`,
         qs : {
-            "customer": "biblio",
             "include": "form",
             ...infos
         }
@@ -31,8 +31,11 @@ async function book(infos, hour) {
     let form = $("#main_form")
         .serializeArray()
         .map(({name,value}) => ({[name]: value}))
-        .reduce((acc,curr) => Object.assign(acc,curr), infos);
-
+        .reduce((acc,curr) => Object.assign(acc,curr));
+    
+    form['area'] = 25
+    form['servizio'] = service
+    
     options = {
         uri: `https://${hostname}${path}?include=timetable`,
         method: "POST",
@@ -102,10 +105,10 @@ function search(key, myArray){
 
 function getWeekday (d) {
     let nextDay = new Date(d)
-    if(d.getDay() == 0) {
-        nextDay.setDate(nextDay.getDate() + 1)
-    } else if(d.getDay() == 6) {
-        nextDay.setDate(nextDay.getDate() + 2)
+    if(d.getDay() == 0) { //Sunday
+        nextDay.setDate(nextDay.getDate() + 1) //Monday
+    } else if(d.getDay() == 6) { //Saturday
+        nextDay.setDate(nextDay.getDate() + 2) //Monday
     }    
     return nextDay 
 }
@@ -119,12 +122,23 @@ function getDateDDMMYYYY(d) {
 }
 
 async function main() {
-    let i_ragazzi = JSON.parse(paramsFile);
-    for(const il_ragazzo of i_ragazzi) {
-        await book(il_ragazzo, '10:00')
-        await book(il_ragazzo, '15:00')
+    const argv = yargs(hideBin(process.argv)).argv
+
+    let i_ragazzi = paramsFile;
+    let service;
+
+    if (argv.lm) {
+        service = 50;
+        console.log('Last minute booking..');
+    } else {
+        service = 26;
+        console.log('Normal booking..');
     }
 
+    for(const il_ragazzo of i_ragazzi) {
+        //await book(il_ragazzo, '10:00', service)
+        await book(il_ragazzo, '15:00', service)
+    }
 }
 
 main()
