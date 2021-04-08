@@ -34,5 +34,12 @@
         "cognome_nome": "Intagliata Giacomo",
         "email": "giacomoint@gmail.com",
         "codice_fiscale": "NTGGCM97B23I754X"
+    },
+    {
+        "servizio": "26",
+        "area": "25",
+        "cognome_nome": "Pinese Gabriele",
+        "email": "gabriele.pinese@studenti.unimi.it",
+        "codice_fiscale": "PNSGRL97L19L872T"
     }
 ]

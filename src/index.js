@@ -97,9 +97,9 @@ function search(key, myArray){
 function getWeekday (d) {
     let nextDay = new Date(d)
     if(d.getDay() == 0) { //Sunday
-        nextDay.setDate(nextDay.getDate() + 1)
+        nextDay.setDate(nextDay.getDate() + 1) //Monday
     } else if(d.getDay() == 6) { //Saturday
-        nextDay.setDate(nextDay.getDate() + 2)
+        nextDay.setDate(nextDay.getDate() + 2) //Monday
     }    
     return nextDay 
 }
