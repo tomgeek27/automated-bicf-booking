@@ -1,12 +1,54 @@
-const fs = require('fs');
-    
-    let rp = require("request-promise")
-    const cheerio = require('cheerio');
-    const hostname = "orari-be.divsi.unimi.it"
-    const path = "/PortaleEasyPlanning/biblio/index.php"
-    rp = rp.defaults({jar: true, transform: (body) => cheerio.load(body)})
+const paramsFile = 
+[
+    {  
+        "servizio": "26",
+        "area": "25",
+        "cognome_nome": "Dagri Massimiliano",
+        "email": "massimiliano.dagri@studenti.unimi.it",
+        "codice_fiscale": "DGRMSM95L27F205Z"
+    },
+    {
+        "servizio": "26",
+        "area": "25",
+        "cognome_nome": "Amadori Tommaso",
+        "email": "tommi27@live.it",
+        "codice_fiscale": "MDRTMS97T02F205Y"
+    },
+    {
+        "servizio": "26",
+        "area": "25",
+        "cognome_nome": "Carmini Marco",
+        "email": "marco9755@gmail.com",
+        "codice_fiscale": "crmmrc97e05f205f"
+    },
+    {
+        "servizio": "26",
+        "area": "25",
+        "cognome_nome": "Fogacci Francesca",
+        "email": "Francescafogacci1@gmail.com",
+        "codice_fiscale": "FGCFNC97H48F205M"
+    },
+    {
+        "servizio": "26",
+        "area": "25",
+        "cognome_nome": "Intagliata Giacomo",
+        "email": "giacomoint@gmail.com",
+        "codice_fiscale": "NTGGCM97B23I754X"
+    },
+    {
+        "servizio": "26",
+        "area": "25",
+        "cognome_nome": "Pinese Gabriele",
+        "email": "gabriele.pinese@studenti.unimi.it",
+        "codice_fiscale": "PNSGRL97L19L872T"
+    }
+]
 
-    let paramsFile = fs.readFileSync('src/params.json');
+let rp = require("request-promise")
+const cheerio = require('cheerio');
+const hostname = "orari-be.divsi.unimi.it"
+const path = "/PortaleEasyPlanning/biblio/index.php"
+rp = rp.defaults({jar: true, transform: (body) => cheerio.load(body)})
 
 //hour should be 10:00 or 15:00
 async function book(infos, hour) {
@@ -113,12 +155,11 @@ function getDateDDMMYYYY(d) {
 }
 
 async function main() {
-    let i_ragazzi = JSON.parse(paramsFile);
+    let i_ragazzi = paramsFile;
     for(const il_ragazzo of i_ragazzi) {
         await book(il_ragazzo, '10:00')
         await book(il_ragazzo, '15:00')
     }
-
 }
 
 main()
