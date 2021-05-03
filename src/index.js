@@ -41,6 +41,13 @@ const paramsFile =
         "cognome_nome": "Pinese Gabriele",
         "email": "gabriele.pinese@studenti.unimi.it",
         "codice_fiscale": "PNSGRL97L19L872T"
+    },
+    {
+        "servizio": "26",
+        "area": "25",
+        "cognome_nome": "Calcagni Paolo",
+        "email": "paolo.calcagni@studenti.unimi.it",
+        "codice_fiscale": "CLCPLA97A03G438J"
     }
 ]
 
