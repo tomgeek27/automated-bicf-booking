@@ -1,10 +1,6 @@
-const fs = require('fs');
-    
-    let rp = require("request-promise")
-    const cheerio = require('cheerio');
-    const hostname = "orari-be.divsi.unimi.it"
-    const path = "/PortaleEasyPlanning/biblio/index.php"
-    rp = rp.defaults({jar: true, transform: (body) => cheerio.load(body)})
+const { hideBin } = require('yargs/helpers')
+const yargs = require('yargs');
+const https = require('https')
 
 let rp = require("request-promise")
 const cheerio = require('cheerio');
@@ -34,7 +30,9 @@ async function book(infos, hour, service) {
         .reduce((acc,curr) => Object.assign(acc,curr));
     
     form['area'] = 25
-    form['servizio'] = service
+    form['servizio'] = 91//service
+    form['raggruppamento_aree'] = 'all'
+    form['raggruppamento_servizi'] = 0
     
     options = {
         uri: `https://${hostname}${path}?include=timetable`,
@@ -65,19 +63,20 @@ async function book(infos, hour, service) {
     }
 
     var $ = await rp(options)
-    form = $(".col-xs-12 .col-sm-6").find("form")
-                .serializeArray()
-                .map(({name,value}) => ({[name]: value}))
-                .reduce((acc,curr) => Object.assign(acc,curr));
-    options = {
-        uri: `https://${hostname}${path}?include=confirmed`,
-        method: "POST",
-        form
-    }            
+    console.log($("#conferma").text())
+    // form = $(".col-xs-12 .col-sm-6").find("form")
+    //             .serializeArray()
+    //             .map(({name,value}) => ({[name]: value}))
+    //             .reduce((acc,curr) => Object.assign(acc,curr));
+    // options = {
+    //     uri: `https://${hostname}${path}?include=confirmed`,
+    //     method: "POST",
+    //     form
+    // }            
 
-    var $ = await rp(options)
+    // var $ = await rp(options)
 
-    console.log(infos['cognome_nome'] + ", " + $("h1.page-title").text())
+    // console.log(infos['cognome_nome'] + ", " + $("h1.page-title").text())
 } 
 
 function getVals(str) {
@@ -127,6 +126,11 @@ async function main() {
     let i_ragazzi = paramsFile;
     let service;
 
+    //SERVIZIO
+    //Piano terra = 92
+    //Piano terra, salottino = 91
+    //Last minute 1 = 50
+    //Primo piano 2 = 26
     if (argv.lm) {
         service = 50;
         console.log('Last minute booking..');
@@ -136,8 +140,8 @@ async function main() {
     }
 
     for(const il_ragazzo of i_ragazzi) {
-        //await book(il_ragazzo, '10:00', service)
-        await book(il_ragazzo, '15:00', service)
+        await book(il_ragazzo, '10:00', service)
+        //await book(il_ragazzo, '15:00', service)
     }
 }
 
