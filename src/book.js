@@ -174,7 +174,7 @@ async function main() {
     }
 
     for(const il_ragazzo of i_ragazzi) {
-        //await book(il_ragazzo, '10:00', service)
+        await book(il_ragazzo, '10:00', service)
         await book(il_ragazzo, '15:00', service)
     }
 }
