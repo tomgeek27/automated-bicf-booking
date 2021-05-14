@@ -3,47 +3,41 @@ const yargs = require('yargs');
 
 const paramsFile = 
 [
-    {  
-        "area": "25",
-        "cognome_nome": "Dagri Massimiliano",
-        "email": "massimiliano.dagri@studenti.unimi.it",
-        "codice_fiscale": "DGRMSM95L27F205Z"
-    },
     {
-        "area": "25",
         "cognome_nome": "Amadori Tommaso",
         "email": "tommi27@live.it",
         "codice_fiscale": "MDRTMS97T02F205Y"
     },
     {
-        "area": "25",
         "cognome_nome": "Carmini Marco",
         "email": "marco9755@gmail.com",
         "codice_fiscale": "crmmrc97e05f205f"
     },
     {
-        "area": "25",
         "cognome_nome": "Fogacci Francesca",
         "email": "Francescafogacci1@gmail.com",
         "codice_fiscale": "FGCFNC97H48F205M"
     },
     {
-        "area": "25",
+        "cognome_nome": "Calcagni Paolo",
+        "email": "paolo.calcagni@studenti.unimi.it",
+        "codice_fiscale": "CLCPLA97A03G438J"
+    },
+    {
         "cognome_nome": "Intagliata Giacomo",
         "email": "giacomoint@gmail.com",
         "codice_fiscale": "NTGGCM97B23I754X"
     },
     {
-        "area": "25",
         "cognome_nome": "Pinese Gabriele",
         "email": "gabriele.pinese@studenti.unimi.it",
         "codice_fiscale": "PNSGRL97L19L872T"
     },
-    {
-        "cognome_nome": "Calcagni Paolo",
-        "email": "paolo.calcagni@studenti.unimi.it",
-        "codice_fiscale": "CLCPLA97A03G438J"
-    }
+    {  
+        "cognome_nome": "Dagri Massimiliano",
+        "email": "massimiliano.dagri@studenti.unimi.it",
+        "codice_fiscale": "DGRMSM95L27F205Z"
+    },
 ]
 
 let rp = require("request-promise")
