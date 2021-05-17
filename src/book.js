@@ -23,10 +23,10 @@ const paramsFile =
         "email": "paolo.calcagni@studenti.unimi.it",
         "codice_fiscale": "CLCPLA97A03G438J"
     },
-    {
-        "cognome_nome": "Intagliata Giacomo",
-        "email": "giacomoint@gmail.com",
-        "codice_fiscale": "NTGGCM97B23I754X"
+    {  
+        "cognome_nome": "Ventura Rafael",
+        "email": "rafaeldavid.venturapadilla@studenti.unimi.it",
+        "codice_fiscale": "VNTRLD96R24Z505C"
     },
     {
         "cognome_nome": "Pinese Gabriele",
@@ -37,6 +37,11 @@ const paramsFile =
         "cognome_nome": "Dagri Massimiliano",
         "email": "massimiliano.dagri@studenti.unimi.it",
         "codice_fiscale": "DGRMSM95L27F205Z"
+    },
+    {
+        "cognome_nome": "Intagliata Giacomo",
+        "email": "giacomoint@gmail.com",
+        "codice_fiscale": "NTGGCM97B23I754X"
     },
 ]
 
