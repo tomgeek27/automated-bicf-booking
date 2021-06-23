@@ -18,16 +18,16 @@ const paramsFile =
         "email": "Francescafogacci1@gmail.com",
         "codice_fiscale": "FGCFNC97H48F205M"
     },
-    // {
-    //     "cognome_nome": "Calcagni Paolo",
-    //     "email": "paolo.calcagni@studenti.unimi.it",
-    //     "codice_fiscale": "CLCPLA97A03G438J"
-    // },
-    {  
-        "cognome_nome": "Ventura Rafael",
-        "email": "rafaeldavid.venturapadilla@studenti.unimi.it",
-        "codice_fiscale": "VNTRLD96R24Z505C"
+    {
+        "cognome_nome": "Calcagni Paolo",
+        "email": "paolo.calcagni@studenti.unimi.it",
+        "codice_fiscale": "CLCPLA97A03G438J"
     },
+    // {  
+    //     "cognome_nome": "Ventura Rafael",
+    //     "email": "rafaeldavid.venturapadilla@studenti.unimi.it",
+    //     "codice_fiscale": "VNTRLD96R24Z505C"
+    // },
     {
         "cognome_nome": "Pinese Gabriele",
         "email": "gabriele.pinese@studenti.unimi.it",
