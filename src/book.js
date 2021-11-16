@@ -19,30 +19,35 @@ const paramsFile =
         "codice_fiscale": "FGCFNC97H48F205M"
     },
     {
-        "cognome_nome": "Calcagni Paolo",
-        "email": "paolo.calcagni@studenti.unimi.it",
-        "codice_fiscale": "CLCPLA97A03G438J"
-    },
+        "cognome_nome": "Pastore Piero",
+        "email": "pastore7714@gmail.com",
+        "codice_fiscale": "PSTPRI97E21L736V"
+    }
+    // {
+    //     "cognome_nome": "Calcagni Paolo",
+    //     "email": "paolo.calcagni@studenti.unimi.it",
+    //     "codice_fiscale": "CLCPLA97A03G438J"
+    // },
     // {  
     //     "cognome_nome": "Ventura Rafael",
     //     "email": "rafaeldavid.venturapadilla@studenti.unimi.it",
     //     "codice_fiscale": "VNTRLD96R24Z505C"
     // },
-    {
-        "cognome_nome": "Pinese Gabriele",
-        "email": "gabriele.pinese@studenti.unimi.it",
-        "codice_fiscale": "PNSGRL97L19L872T"
-    },
-    {  
-        "cognome_nome": "Dagri Massimiliano",
-        "email": "massimiliano.dagri@studenti.unimi.it",
-        "codice_fiscale": "DGRMSM95L27F205Z"
-    },
-    {
-        "cognome_nome": "Intagliata Giacomo",
-        "email": "giacomoint@gmail.com",
-        "codice_fiscale": "NTGGCM97B23I754X"
-    },
+    // {
+    //     "cognome_nome": "Pinese Gabriele",
+    //     "email": "gabriele.pinese@studenti.unimi.it",
+    //     "codice_fiscale": "PNSGRL97L19L872T"
+    // },
+    // {  
+    //     "cognome_nome": "Dagri Massimiliano",
+    //     "email": "massimiliano.dagri@studenti.unimi.it",
+    //     "codice_fiscale": "DGRMSM95L27F205Z"
+    // },
+    // {
+    //     "cognome_nome": "Intagliata Giacomo",
+    //     "email": "giacomoint@gmail.com",
+    //     "codice_fiscale": "NTGGCM97B23I754X"
+    // },
 ]
 
 let rp = require("request-promise")
@@ -72,6 +77,8 @@ async function book(infos, hour, service) {
     
     form['area'] = 25
     form['servizio'] = service
+    form['raggruppamento_aree'] = 'all'
+    form['raggruppamento_servizi'] = 0
     
     options = {
         uri: `https://${hostname}${path}?include=timetable`,
@@ -164,6 +171,11 @@ async function main() {
     let i_ragazzi = paramsFile;
     let service;
 
+    //SERVIZIO
+    //Piano terra = 92
+    //Piano terra, salottino = 91
+    //Last minute 1 = 50
+    //Primo piano 2 = 26
     if (argv.lm) {
         service = 50;
         console.log('Last minute booking..');
