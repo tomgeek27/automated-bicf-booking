@@ -1,8 +1,6 @@
-const { chromium, firefox, webkit } = require('playwright');
+const { chromium } = require('playwright');
 
-async function main () {
-  const browser = await chromium.launch({headless: false, slowMo: 100});  // Or 'firefox' or 'webkit'.
-  const page = await browser.newPage();
+async function book(page, il_ragazzo, hour) {
   await page.goto('https://orari-be.divsi.unimi.it/PortaleEasyPlanning/biblio/index.php?include=form');
   
   const sede = await page.$('#area');
@@ -11,14 +9,31 @@ async function main () {
   const servizio = await page.$('#servizio')
   await servizio.selectOption("50")
 
-  await (await page.$("#codice_fiscale")).type("VLNSML95L05F119C")
-  await (await page.$("#cognome_nome")).type("Amadori Tommaso")
-  await (await page.$("#email")).type("tommi27@live.it")
+  await page.type("#codice_fiscale", il_ragazzo.codice_fiscale)
+  await page.type("#cognome_nome", il_ragazzo.cognome_nome)
+  await page.type("#email", il_ragazzo.email)
 
-  await (await page.$("#verify")).click()
-  await page.click('text=15:00');
+  await page.click("#verify")
+  await page.click(`text=${hour}`);
   await page.click("#conferma")
-  // other actions...
+
+  console.log(`${il_ragazzo.cognome_nome} prenotato alle ${hour}`)
+}
+
+async function main () {
+
+  let i_ragazzi = paramsFile;
+  const ORE_DIECI = '10:00'
+  const ORE_QUINDICI = '15:00'
+
+  const browser = await chromium.launch({headless: false, slowMo: 100});
+  const page = await browser.newPage();
+
+  for(const il_ragazzo of i_ragazzi) {
+    await book(page, il_ragazzo, ORE_DIECI)
+    await book(page, il_ragazzo, ORE_QUINDICI)
+  }
+
   await browser.close();
 }
 
