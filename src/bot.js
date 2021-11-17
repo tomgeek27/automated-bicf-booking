@@ -9,14 +9,6 @@ async function book(page, il_ragazzo, hour) {
   const servizio = await page.$('#servizio')
   await servizio.selectOption("50")
 
-  await page.type("#codice_fiscale", il_ragazzo.codice_fiscale)
-  await page.type("#cognome_nome", il_ragazzo.cognome_nome)
-  await page.type("#email", il_ragazzo.email)
-
-  await page.click("#verify")
-  await page.click(`text=${hour}`);
-  await page.click("#conferma")
-
   console.log(`${il_ragazzo.cognome_nome} prenotato alle ${hour}`)
 }
 
@@ -30,7 +22,7 @@ async function main () {
   const page = await browser.newPage();
 
   console.log("STARTED\n")
-  
+
   for(const il_ragazzo of i_ragazzi) {
     await book(page, il_ragazzo, ORE_DIECI)
     await book(page, il_ragazzo, ORE_QUINDICI)
