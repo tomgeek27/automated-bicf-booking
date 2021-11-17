@@ -78,6 +78,8 @@ async function main () {
   const browser = await chromium.launch({headless: false, slowMo: 100});
   const page = await browser.newPage();
 
+  console.log("STARTED\n")
+  
   for(const il_ragazzo of i_ragazzi) {
     await book(page, il_ragazzo, ORE_DIECI)
     await book(page, il_ragazzo, ORE_QUINDICI)
