@@ -1,28 +1,29 @@
 const { hideBin } = require('yargs/helpers')
 const yargs = require('yargs');
+const https = require('https')
 
 const paramsFile = 
 [
-    {
-        "cognome_nome": "Amadori Tommaso",
-        "email": "tommi27@live.it",
-        "codice_fiscale": "MDRTMS97T02F205Y"
-    },
-    {
-        "cognome_nome": "Carmini Marco",
-        "email": "marco9755@gmail.com",
-        "codice_fiscale": "crmmrc97e05f205f"
-    },
-    {
-        "cognome_nome": "Fogacci Francesca",
-        "email": "Francescafogacci1@gmail.com",
-        "codice_fiscale": "FGCFNC97H48F205M"
-    },
-    {
-        "cognome_nome": "Pastore Piero",
-        "email": "pastore7714@gmail.com",
-        "codice_fiscale": "PSTPRI97E21L736V"
-    }
+    // {
+    //     "cognome_nome": "Amadori Tommaso",
+    //     "email": "tommi27@live.it",
+    //     "codice_fiscale": "MDRTMS97T02F205Y"
+    // },
+    // {
+    //     "cognome_nome": "Carmini Marco",
+    //     "email": "marco9755@gmail.com",
+    //     "codice_fiscale": "crmmrc97e05f205f"
+    // },
+    // {
+    //     "cognome_nome": "Fogacci Francesca",
+    //     "email": "Francescafogacci1@gmail.com",
+    //     "codice_fiscale": "FGCFNC97H48F205M"
+    // },
+    // {
+    //     "cognome_nome": "Pastore Piero",
+    //     "email": "pastore7714@gmail.com",
+    //     "codice_fiscale": "PSTPRI97E21L736V"
+    // }
     // {
     //     "cognome_nome": "Calcagni Paolo",
     //     "email": "paolo.calcagni@studenti.unimi.it",
@@ -33,11 +34,11 @@ const paramsFile =
     //     "email": "rafaeldavid.venturapadilla@studenti.unimi.it",
     //     "codice_fiscale": "VNTRLD96R24Z505C"
     // },
-    // {
-    //     "cognome_nome": "Pinese Gabriele",
-    //     "email": "gabriele.pinese@studenti.unimi.it",
-    //     "codice_fiscale": "PNSGRL97L19L872T"
-    // },
+    {
+        "cognome_nome": "Pinese Gabriele",
+        "email": "gabriele.pinese@studenti.unimi.it",
+        "codice_fiscale": "PNSGRL97L19L872T"
+    },
     // {  
     //     "cognome_nome": "Dagri Massimiliano",
     //     "email": "massimiliano.dagri@studenti.unimi.it",
@@ -76,7 +77,7 @@ async function book(infos, hour, service) {
         .reduce((acc,curr) => Object.assign(acc,curr));
     
     form['area'] = 25
-    form['servizio'] = service
+    form['servizio'] = 91//service
     form['raggruppamento_aree'] = 'all'
     form['raggruppamento_servizi'] = 0
     
@@ -109,19 +110,20 @@ async function book(infos, hour, service) {
     }
 
     var $ = await rp(options)
-    form = $(".col-xs-12 .col-sm-6").find("form")
-                .serializeArray()
-                .map(({name,value}) => ({[name]: value}))
-                .reduce((acc,curr) => Object.assign(acc,curr));
-    options = {
-        uri: `https://${hostname}${path}?include=confirmed`,
-        method: "POST",
-        form
-    }            
+    console.log($("#conferma").text())
+    // form = $(".col-xs-12 .col-sm-6").find("form")
+    //             .serializeArray()
+    //             .map(({name,value}) => ({[name]: value}))
+    //             .reduce((acc,curr) => Object.assign(acc,curr));
+    // options = {
+    //     uri: `https://${hostname}${path}?include=confirmed`,
+    //     method: "POST",
+    //     form
+    // }            
 
-    var $ = await rp(options)
+    // var $ = await rp(options)
 
-    console.log(infos['cognome_nome'] + ", " + $("h1.page-title").text())
+    // console.log(infos['cognome_nome'] + ", " + $("h1.page-title").text())
 } 
 
 function getVals(str) {
@@ -186,7 +188,7 @@ async function main() {
 
     for(const il_ragazzo of i_ragazzi) {
         await book(il_ragazzo, '10:00', service)
-        await book(il_ragazzo, '15:00', service)
+        //await book(il_ragazzo, '15:00', service)
     }
 }
 
