@@ -2,7 +2,7 @@ const { chromium } = require('playwright');
 const { hideBin } = require('yargs/helpers')
 const yargs = require('yargs');
 
-async function book(page, il_ragazzo, hour) {
+async function book(page, il_ragazzo, hour, service) {
   await page.goto('https://orari-be.divsi.unimi.it/PortaleEasyPlanning/biblio/index.php?include=form');
   
   const sede = await page.$('#area');
