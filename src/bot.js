@@ -67,7 +67,7 @@ async function main () {
   const ORE_DIECI = '10:00'
   const ORE_QUINDICI = '15:00'
 
-  const browser = await chromium.launch({headless: false, slowMo: 0});
+  const browser = await chromium.launch({headless: true, slowMo: 0});
   const page = await browser.newPage();
 
   for(const il_ragazzo of i_ragazzi) {
