@@ -1,4 +1,6 @@
 const { chromium } = require('playwright');
+const fs = require('fs');
+
 const { hideBin } = require('yargs/helpers')
 const yargs = require('yargs');
 
@@ -41,8 +43,9 @@ async function book(page, il_ragazzo, hour, service) {
 
 async function main () {
   const argv = yargs(hideBin(process.argv)).argv
-
-  let i_ragazzi = paramsFile;
+  let paramsFile = fs.readFileSync('src/params.json')
+  let i_ragazzi = JSON.parse(paramsFile);
+  console.log(i_ragazzi)
 
   if (argv.lm) {
     service = 50;
