@@ -12,13 +12,20 @@ async function book(page, il_ragazzo, hour, service) {
   
   const servizio = await page.$('#servizio')
   await servizio.selectOption(`${service}`)
-
+  
   await page.waitForLoadState("networkidle")
+
+  if(service != 91 || service != 92) {
+    let now = new Date()
+    now.setDate(new Date().getDate() + 3)
+    await page.click(".input-group-addon")
+    await page.click(`text=${now.getDate()}`)
+  }
 
   await page.type("#codice_fiscale", il_ragazzo.codice_fiscale)
   await page.type("#cognome_nome", il_ragazzo.cognome_nome)
-  await page.type("#email", il_ragazzo.email)
-
+  await page.type("#email", il_ragazzo.email)  
+  
   await page.click("#verify")
   
   try {
@@ -51,14 +58,14 @@ async function main () {
     service = 50;
     console.log('Last minute booking..');
   } else {
-    service = 92;
+    service = 91;
     console.log('Normal booking..');
   }
 
   const ORE_DIECI = '10:00'
   const ORE_QUINDICI = '15:00'
 
-  const browser = await chromium.launch({headless: true, slowMo: 0});
+  const browser = await chromium.launch({headless: false, slowMo: 0});
   const page = await browser.newPage();
   
   for(const il_ragazzo of i_ragazzi) {

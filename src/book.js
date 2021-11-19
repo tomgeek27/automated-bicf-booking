@@ -1,6 +1,7 @@
 const { hideBin } = require('yargs/helpers')
 const yargs = require('yargs');
 const https = require('https')
+const fs = require('fs');
 
 let rp = require("request-promise")
 const cheerio = require('cheerio');
@@ -62,8 +63,8 @@ async function book(infos, hour, service) {
         form
     }
 
-    var $ = await rp(options)
-    console.log($("#conferma").text())
+    rp(options).then(console.log)
+    //console.log($("#conferma").text())
     // form = $(".col-xs-12 .col-sm-6").find("form")
     //             .serializeArray()
     //             .map(({name,value}) => ({[name]: value}))
@@ -122,8 +123,9 @@ function getDateDDMMYYYY(d) {
 
 async function main() {
     const argv = yargs(hideBin(process.argv)).argv
+    let paramsFile = fs.readFileSync('src/params.json')
 
-    let i_ragazzi = paramsFile;
+    let i_ragazzi = JSON.parse(paramsFile);
     let service;
 
     //SERVIZIO
