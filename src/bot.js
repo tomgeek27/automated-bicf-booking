@@ -15,7 +15,7 @@ async function book(page, il_ragazzo, hour, service) {
   
   await page.waitForLoadState("networkidle")
 
-  if(service != 91 || service != 92) {
+  if(service == 91 || service == 92) {
     let now = new Date()
     now.setDate(new Date().getDate() + 3)
     await page.click(".input-group-addon")
@@ -27,7 +27,8 @@ async function book(page, il_ragazzo, hour, service) {
   await page.type("#email", il_ragazzo.email)  
   
   await page.click("#verify")
-  
+
+  await page.waitForLoadState("networkidle")
   try {
     const orario = await page.waitForSelector(`text=${hour}`, {
       timeout: 1000
@@ -43,6 +44,7 @@ async function book(page, il_ragazzo, hour, service) {
     return
   }
 
+  await page.waitForLoadState("networkidle")
   await page.click("#conferma")
 
   console.log(`${il_ragazzo.cognome_nome} prenotato alle ${hour}`)
@@ -67,7 +69,7 @@ async function main () {
 
   const browser = await chromium.launch({headless: false, slowMo: 0});
   const page = await browser.newPage();
-  
+
   for(const il_ragazzo of i_ragazzi) {
     await book(page, il_ragazzo, ORE_DIECI, service)
     await book(page, il_ragazzo, ORE_QUINDICI, service)
