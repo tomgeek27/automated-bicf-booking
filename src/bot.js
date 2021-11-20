@@ -4,8 +4,30 @@ const fs = require('fs');
 const { hideBin } = require('yargs/helpers')
 const yargs = require('yargs');
 
+const services = {
+  PIANOTERRA: '92',
+  PIANOTERRA_SALOTTINO: '91',
+  LASTMINUTE: '50',
+  LASTMINUTE2: '26'
+}
+
+const URL = 'https://orari-be.divsi.unimi.it/PortaleEasyPlanning/biblio/index.php?include=form';
+
+function getKeyByValue(object, value) {
+  return Object.keys(object).find(key => object[key] === value);
+}
+
+function getNextDay(offset) {
+  let t = new Date()
+  t.setDate(new Date().getDate() + offset)
+  t.setHours(1, 0, 0, 0)
+
+  return t
+}
+
 async function book(page, il_ragazzo, hour, service) {
-  await page.goto('https://orari-be.divsi.unimi.it/PortaleEasyPlanning/biblio/index.php?include=form');
+  console.log(`Prenotazione in corso: ${il_ragazzo.cognome_nome}, ${hour}, ${getKeyByValue(services, service)}`)
+  await page.goto(URL);
   
   const sede = await page.$('#area');
   await sede.selectOption("25")
@@ -16,10 +38,9 @@ async function book(page, il_ragazzo, hour, service) {
   await page.waitForLoadState("networkidle")
 
   if(service == 91 || service == 92) {
-    let now = new Date()
-    now.setDate(new Date().getDate() + 3)
+    let newTime = getNextDay(3)
     await page.click(".input-group-addon")
-    await page.click(`text=${now.getDate()}`)
+    await(await page.$(`[data-date=\"${newTime.getTime()}\"]`)).click()
   }
 
   await page.type("#codice_fiscale", il_ragazzo.codice_fiscale)
@@ -40,27 +61,27 @@ async function book(page, il_ragazzo, hour, service) {
 
     await orario.click()
   } catch (err) {
-    console.error(`${il_ragazzo.cognome_nome} posto gia' prenotato o posti finiti (ore: ${hour})`)
-    return
+    console.error(`---> ${il_ragazzo.cognome_nome} posto gia' prenotato o posti finiti (ore: ${hour})`, '\n')
+    return false
   }
 
   await page.waitForLoadState("networkidle")
   await page.click("#conferma")
 
-  console.log(`${il_ragazzo.cognome_nome} prenotato alle ${hour}`)
+  console.log(`---> ${il_ragazzo.cognome_nome} prenotato alle ${hour}`, '\n')
+  return true
 }
 
 async function main () {
   const argv = yargs(hideBin(process.argv)).argv
   let paramsFile = fs.readFileSync('src/params.json')
   let i_ragazzi = JSON.parse(paramsFile);
-  console.log(i_ragazzi)
 
   if (argv.lm) {
-    service = 50;
+    service = [services.LASTMINUTE, services.LASTMINUTE2];
     console.log('Last minute booking..');
   } else {
-    service = 91;
+    service = [services.PIANOTERRA, services.PIANOTERRA_SALOTTINO];
     console.log('Normal booking..');
   }
 
@@ -69,10 +90,14 @@ async function main () {
 
   const browser = await chromium.launch({headless: true, slowMo: 0});
   const page = await browser.newPage();
-
   for(const il_ragazzo of i_ragazzi) {
-    await book(page, il_ragazzo, ORE_DIECI, service)
-    await book(page, il_ragazzo, ORE_QUINDICI, service)
+    bookingMorning = await book(page, il_ragazzo, ORE_DIECI, service[0])
+    if(!bookingMorning)
+      await book(page, il_ragazzo, ORE_DIECI, service[1])
+    
+    bookingAfternoon = await book(page, il_ragazzo, ORE_QUINDICI, service[0])
+    if(!bookingAfternoon)
+      await book(page, il_ragazzo, ORE_QUINDICI, service[1])
   }
 
   await browser.close();
