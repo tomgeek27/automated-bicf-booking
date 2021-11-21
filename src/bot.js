@@ -4,6 +4,8 @@ const fs = require('fs');
 const { hideBin } = require('yargs/helpers')
 const yargs = require('yargs');
 
+const path = require("path");
+
 const services = {
   PIANOTERRA: '92',
   PIANOTERRA_SALOTTINO: '91',
@@ -74,7 +76,8 @@ async function book(page, il_ragazzo, hour, service) {
 
 async function main () {
   const argv = yargs(hideBin(process.argv)).argv
-  let paramsFile = fs.readFileSync('src/params.json')
+  
+  let paramsFile = fs.readFileSync(path.resolve(__dirname, "./params.json"))
   let i_ragazzi = JSON.parse(paramsFile);
 
   if (argv.lm) {
