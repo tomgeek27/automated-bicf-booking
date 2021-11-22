@@ -8,13 +8,15 @@
     "npm": ">= 4.4.0"
   },
   "scripts": {
-    "start": "node src/bot.js",
+    "start": "node src/server.js",
+    "bot": "node src/bot.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "cheerio": "^1.0.0-rc.5",
+    "express": "^4.17.1",
     "node-schedule": "^2.0.0",
     "playwright": "^1.16.3",
     "request": "^2.88.2",

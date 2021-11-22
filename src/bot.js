@@ -6,6 +6,8 @@ const yargs = require('yargs');
 
 const path = require("path");
 
+let res;
+
 const services = {
   PIANOTERRA: '92',
   PIANOTERRA_SALOTTINO: '91',
@@ -27,8 +29,8 @@ function getNextDay(offset) {
   return t
 }
 
-async function book(page, il_ragazzo, hour, service) {
-  console.log(`Prenotazione in corso: ${il_ragazzo.cognome_nome}, ${hour}, ${getKeyByValue(services, service)}`)
+async function book(page, il_ragazzo, hour, service, r) {
+  print(`Prenotazione in corso: ${il_ragazzo.cognome_nome}, ${hour}, ${getKeyByValue(services, service)}`, `<div style="font-size: 18px; color: grey">`, `</div>`)
   await page.goto(URL);
   
   const sede = await page.$('#area');
@@ -63,29 +65,41 @@ async function book(page, il_ragazzo, hour, service) {
 
     await orario.click()
   } catch (err) {
-    console.error(`---> ${il_ragazzo.cognome_nome} posto gia' prenotato o posti finiti (ore: ${hour})`, '\n')
+    print(`---> ${il_ragazzo.cognome_nome} posto gia' prenotato o posti finiti (ore: ${hour})`, `<div style="font-size: 20px">`, `</div>`)
     return false
   }
 
   await page.waitForLoadState("networkidle")
   await page.click("#conferma")
 
-  console.log(`---> ${il_ragazzo.cognome_nome} prenotato alle ${hour}`, '\n')
+  print(`---> ${il_ragazzo.cognome_nome} prenotato alle ${hour}`, `<div style="font-size: 20px">`, `</div>`)
   return true
 }
 
-async function main () {
+function print(str, htmlTags_open, htmlTags_close) {
+  if(res != null)
+    res.write(htmlTags_open + str + htmlTags_close)
+  console.log(str)
+}
+
+function endResponse() {
+  if(res != null)
+    res.end()
+}
+
+async function main (res_, lm) {
   const argv = yargs(hideBin(process.argv)).argv
-  
+  res = res_
+
   let paramsFile = fs.readFileSync(path.resolve(__dirname, "./params.json"))
   let i_ragazzi = JSON.parse(paramsFile);
 
-  if (argv.lm) {
+  if (argv.lm || lm) {
     service = [services.LASTMINUTE, services.LASTMINUTE2];
-    console.log('Last minute booking..');
+    print('Last minute booking..', `<div>`, `</div>`);
   } else {
     service = [services.PIANOTERRA, services.PIANOTERRA_SALOTTINO];
-    console.log('Normal booking..');
+    print('Normal booking..', `<div>`, `</div>`);
   }
 
   const ORE_DIECI = '10:00'
@@ -94,16 +108,19 @@ async function main () {
   const browser = await chromium.launch({headless: true, slowMo: 0});
   const page = await browser.newPage();
   for(const il_ragazzo of i_ragazzi) {
-    bookingMorning = await book(page, il_ragazzo, ORE_DIECI, service[0])
+    bookingMorning = await book(page, il_ragazzo, ORE_DIECI, service[0], res_)
     if(!bookingMorning)
-      await book(page, il_ragazzo, ORE_DIECI, service[1])
+      await book(page, il_ragazzo, ORE_DIECI, service[1], res_)
     
-    bookingAfternoon = await book(page, il_ragazzo, ORE_QUINDICI, service[0])
+    bookingAfternoon = await book(page, il_ragazzo, ORE_QUINDICI, service[0], res_)
     if(!bookingAfternoon)
-      await book(page, il_ragazzo, ORE_QUINDICI, service[1])
+      await book(page, il_ragazzo, ORE_QUINDICI, service[1], res_)
   }
 
   await browser.close();
+  endResponse()
 }
 
-main()
+//main()
+
+module.exports = main
