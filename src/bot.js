@@ -15,6 +15,13 @@ const services = {
   LASTMINUTE2: '26'
 }
 
+const PERIODO = {
+  MATTINA: 0,
+  POMERIGGIO: 1
+}
+
+const ORARIO_DEAFULT = ['10:00', '15:00']
+
 const URL = 'https://orari-be.divsi.unimi.it/PortaleEasyPlanning/biblio/index.php?include=form';
 
 function getKeyByValue(object, value) {
@@ -29,7 +36,15 @@ function getNextDay(offset) {
   return t
 }
 
-async function book(page, il_ragazzo, hour, service, r) {
+async function book(page, il_ragazzo, index_hours, service) {
+  let hour = ORARIO_DEAFULT[index_hours]
+  switch(index_hours) {
+    case PERIODO.MATTINA:
+      hour = il_ragazzo.ora_mattina ?? hour
+    case PERIODO.POMERIGGIO:
+      hour = il_ragazzo.ora_pomeriggio ?? hour
+  }
+
   print(`Prenotazione in corso: ${il_ragazzo.cognome_nome}, ${hour}, ${getKeyByValue(services, service)}`, `<div style="font-size: 18px; color: grey">`, `</div>`)
   await page.goto(URL);
   
@@ -55,6 +70,7 @@ async function book(page, il_ragazzo, hour, service, r) {
 
   await page.waitForLoadState("networkidle")
   try {
+
     const orario = await page.waitForSelector(`text=${hour}`, {
       timeout: 1000
     })
@@ -102,19 +118,16 @@ async function main (res_, lm) {
     print('Normal booking..', `<div>`, `</div>`);
   }
 
-  const ORE_DIECI = '10:00'
-  const ORE_QUINDICI = '15:00'
-
   const browser = await chromium.launch({headless: true, slowMo: 0});
   const page = await browser.newPage();
   for(const il_ragazzo of i_ragazzi) {
-    bookingMorning = await book(page, il_ragazzo, ORE_DIECI, service[0], res_)
+    bookingMorning = await book(page, il_ragazzo, PERIODO.MATTINA, service[0])
     if(!bookingMorning)
-      await book(page, il_ragazzo, ORE_DIECI, service[1], res_)
+      await book(page, il_ragazzo, PERIODO.MATTINA, service[1])
     
-    bookingAfternoon = await book(page, il_ragazzo, ORE_QUINDICI, service[0], res_)
+    bookingAfternoon = await book(page, il_ragazzo, PERIODO.POMERIGGIO, service[0])
     if(!bookingAfternoon)
-      await book(page, il_ragazzo, ORE_QUINDICI, service[1], res_)
+      await book(page, il_ragazzo, PERIODO.POMERIGGIO, service[1])
   }
 
   await browser.close();
