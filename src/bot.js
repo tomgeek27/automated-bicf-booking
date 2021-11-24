@@ -41,8 +41,10 @@ async function book(page, il_ragazzo, index_hours, service) {
   switch(index_hours) {
     case PERIODO.MATTINA:
       hour = il_ragazzo.ora_mattina ?? hour
+      break
     case PERIODO.POMERIGGIO:
       hour = il_ragazzo.ora_pomeriggio ?? hour
+      break
   }
 
   print(`Prenotazione in corso: ${il_ragazzo.cognome_nome}, ${hour}, ${getKeyByValue(services, service)}`, `<div style="font-size: 18px; color: grey">`, `</div>`)
