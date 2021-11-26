@@ -120,7 +120,7 @@ async function main (res_, lm) {
     print('Normal booking..', `<div>`, `</div>`);
   }
 
-  const browser = await chromium.launch({headless: true, slowMo: 0});
+  const browser = await chromium.launch({headless: true, slowMo: 0, chromiumSandbox: false});
   const page = await browser.newPage();
   for(const il_ragazzo of i_ragazzi) {
     bookingMorning = await book(page, il_ragazzo, PERIODO.MATTINA, service[0])
