@@ -107,10 +107,13 @@ function endResponse() {
 
 async function main (res_, lm) {
   const argv = yargs(hideBin(process.argv)).argv
-  res = res_
-
-  let paramsFile = fs.readFileSync(path.resolve(__dirname, "./params.json"))
-  let i_ragazzi = JSON.parse(paramsFile);
+  res = res_;
+  let params;
+  if(fs.existsSync(path.resolve(__dirname, "./params.json"))) {
+    console.log("File detected: ", path.resolve(__dirname, "./params.json"))
+    params = fs.readFileSync(path.resolve(__dirname, "./params.json"))
+  }
+  let i_ragazzi = JSON.parse(process.env.I_RAGAZZI || params);
 
   if (argv.lm || lm) {
     service = [services.LASTMINUTE, services.LASTMINUTE2];
@@ -122,15 +125,15 @@ async function main (res_, lm) {
 
   const browser = await chromium.launch({headless: true, slowMo: 0, chromiumSandbox: false});
   const page = await browser.newPage();
-  for(const il_ragazzo of i_ragazzi) {
-    bookingMorning = await book(page, il_ragazzo, PERIODO.MATTINA, service[0])
-    if(!bookingMorning)
-      await book(page, il_ragazzo, PERIODO.MATTINA, service[1])
+  // for(const il_ragazzo of i_ragazzi) {
+  //   bookingMorning = await book(page, il_ragazzo, PERIODO.MATTINA, service[0])
+  //   if(!bookingMorning)
+  //     await book(page, il_ragazzo, PERIODO.MATTINA, service[1])
     
-    bookingAfternoon = await book(page, il_ragazzo, PERIODO.POMERIGGIO, service[0])
-    if(!bookingAfternoon)
-      await book(page, il_ragazzo, PERIODO.POMERIGGIO, service[1])
-  }
+  //   bookingAfternoon = await book(page, il_ragazzo, PERIODO.POMERIGGIO, service[0])
+  //   if(!bookingAfternoon)
+  //     await book(page, il_ragazzo, PERIODO.POMERIGGIO, service[1])
+  // }
 
   await browser.close();
   endResponse()
