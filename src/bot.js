@@ -50,13 +50,13 @@ async function book(page, il_ragazzo, index_hours, service) {
   print(`Prenotazione in corso: ${il_ragazzo.cognome_nome}, ${hour}, ${getKeyByValue(services, service)}`, `<div style="font-size: 18px; color: grey">`, `</div>`)
   await page.goto(URL);
   
+  await page.waitForLoadState("networkidle")
+  
   const sede = await page.$('#area');
   await sede.selectOption("25")
   
   const servizio = await page.$('#servizio')
   await servizio.selectOption(`${service}`)
-  
-  await page.waitForLoadState("networkidle")
 
   if(service == 91 || service == 92) {
     let newTime = getNextDay(3)
@@ -113,8 +113,11 @@ async function main (res_, lm) {
     console.log("File detected: ", path.resolve(__dirname, "./params.json"))
     params = fs.readFileSync(path.resolve(__dirname, "./params.json"))
   }
-  let i_ragazzi = JSON.parse(process.env.I_RAGAZZI || params);
+
+  //process.env.I_RAGAZZI is an env var in heroku that represent all the users to book
+  let i_ragazzi = JSON.parse(process.env.I_RAGAZZI || params); 
   console.log(i_ragazzi)
+
   if (argv.lm || lm) {
     service = [services.LASTMINUTE, services.LASTMINUTE2];
     print('Last minute booking..', `<div>`, `</div>`);
