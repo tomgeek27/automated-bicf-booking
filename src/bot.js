@@ -123,7 +123,7 @@ async function main (res_, lm) {
     print(`[${getNextDay(3)}]`, `<div style="font-size: 18px; color: grey">`, `</div>`)
   }
 
-  const browser = await chromium.launch({headless: false, slowMo: 100, chromiumSandbox: false});
+  const browser = await chromium.launch({headless: true, slowMo: 0, chromiumSandbox: false});
   const page = await browser.newPage();
   for(const il_ragazzo of i_ragazzi) {
     bookingAttempt = await book(page, il_ragazzo, service[0])
