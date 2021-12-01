@@ -15,12 +15,8 @@ const services = {
   LASTMINUTE2: '26'
 }
 
-const PERIODO = {
-  MATTINA: 0,
-  POMERIGGIO: 1
-}
-
-const ORARIO_DEAFULT = ['10:00', '15:00']
+const ORARIO_DEAFULT = '10:00'
+const LAST_ORARIO = 18
 
 const URL = 'https://orari-be.divsi.unimi.it/PortaleEasyPlanning/biblio/index.php?include=form';
 
@@ -36,16 +32,14 @@ function getNextDay(offset) {
   return t
 }
 
-async function book(page, il_ragazzo, index_hours, service) {
-  let hour = ORARIO_DEAFULT[index_hours]
-  switch(index_hours) {
-    case PERIODO.MATTINA:
-      hour = il_ragazzo.ora_mattina ?? hour
-      break
-    case PERIODO.POMERIGGIO:
-      hour = il_ragazzo.ora_pomeriggio ?? hour
-      break
-  }
+function parseHourToInt(hour) {
+  return parseInt(hour.substring(0, 2), 10)
+}
+
+async function book(page, il_ragazzo, service) {
+  hour = il_ragazzo.ora ?? ORARIO_DEAFULT
+
+  let num_ore = LAST_ORARIO - parseHourToInt(hour)
 
   print(`Prenotazione in corso: ${il_ragazzo.cognome_nome}, ${hour}, ${getKeyByValue(services, service)}`, `<div style="font-size: 18px; color: grey">`, `</div>`)
   await page.goto(URL);
@@ -63,6 +57,9 @@ async function book(page, il_ragazzo, index_hours, service) {
     await page.click(".input-group-addon")
     await(await page.$(`[data-date=\"${newTime.getTime()}\"]`)).click()
   }
+
+  let n_seconds = num_ore * 60 * 60
+  await page.selectOption('#durata_servizio', `${n_seconds}`)
 
   await page.type("#codice_fiscale", il_ragazzo.codice_fiscale)
   await page.type("#cognome_nome", il_ragazzo.cognome_nome)
@@ -116,7 +113,6 @@ async function main (res_, lm) {
 
   //process.env.I_RAGAZZI is an env var in heroku that represent all the users to book
   let i_ragazzi = JSON.parse(process.env.I_RAGAZZI || params); 
-  console.log(i_ragazzi)
 
   if (argv.lm || lm) {
     service = [services.LASTMINUTE, services.LASTMINUTE2];
@@ -124,18 +120,16 @@ async function main (res_, lm) {
   } else {
     service = [services.PIANOTERRA, services.PIANOTERRA_SALOTTINO];
     print('Normal booking..', `<div>`, `</div>`);
+    print(`[${getNextDay(3)}]`, `<div style="font-size: 18px; color: grey">`, `</div>`)
   }
 
-  const browser = await chromium.launch({headless: true, slowMo: 0, chromiumSandbox: false});
+  const browser = await chromium.launch({headless: false, slowMo: 100, chromiumSandbox: false});
   const page = await browser.newPage();
   for(const il_ragazzo of i_ragazzi) {
-    bookingMorning = await book(page, il_ragazzo, PERIODO.MATTINA, service[0])
-    if(!bookingMorning)
-      await book(page, il_ragazzo, PERIODO.MATTINA, service[1])
+    bookingAttempt = await book(page, il_ragazzo, service[0])
+    if(!bookingAttempt)
+      await book(page, il_ragazzo, service[1])
     
-    bookingAfternoon = await book(page, il_ragazzo, PERIODO.POMERIGGIO, service[0])
-    if(!bookingAfternoon)
-      await book(page, il_ragazzo, PERIODO.POMERIGGIO, service[1])
   }
 
   await browser.close();
